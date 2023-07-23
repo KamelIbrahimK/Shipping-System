@@ -1,13 +1,13 @@
 package com.shipping.Controllers;
 
-import com.shipping.Dtos.UserDto;
-import com.shipping.Entities.Customer;
-import com.shipping.Entities.User;
-import com.shipping.Services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.shipping.Dtos.UserDto;
+import com.shipping.Services.CustomerService;
 
 @RestController
 @RequestMapping(path = "/Customer")
@@ -16,7 +16,7 @@ public class UserController {
     private CustomerService customerService;
 
     @PostMapping(path = "/signUp")
-    public UserDto signup(@RequestBody UserDto userDto) {
+    public String signup(@RequestBody UserDto userDto) {
         return customerService.signup(userDto);
     }
 
