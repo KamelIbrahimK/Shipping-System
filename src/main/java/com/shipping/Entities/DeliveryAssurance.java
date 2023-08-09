@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Data
 public class DeliveryAssurance extends User {
@@ -17,8 +19,8 @@ public class DeliveryAssurance extends User {
     private String userName;
     private String password;
 
-    @OneToMany(mappedBy = "deliveryassurance", cascade = CascadeType.ALL)
-    private List<CustomerOrder> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "deliveryassurance", cascade = CascadeType.ALL)
+//    private List<CustomerOrder> orders = new ArrayList<>();
 
     public DeliveryAssurance(String name, String phoneNumber, String address, String userName, String password,
             LocalDateTime joinDate) {

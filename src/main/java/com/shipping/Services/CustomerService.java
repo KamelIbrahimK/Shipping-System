@@ -2,6 +2,8 @@ package com.shipping.Services;
 
 import java.time.LocalDateTime;
 
+import com.shipping.Dtos.LoginDto;
+import com.shipping.Dtos.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,8 @@ public class CustomerService {
     @Autowired
     private CoordinatorRepo coordinatorRepo;
 
-    public boolean checkIfUserNameExists(String userName) {
+
+    public boolean checkIfUserNameIsNotUsed(String userName) {
         Seller seller = sellerRepo.findByUserName(userName);
         DeliveryAssurance deliveryAssurance = deliveryAssuranceRepo.findByUserName(userName);
         Coordinator coordinator = coordinatorRepo.findByUserName(userName);
@@ -33,6 +36,24 @@ public class CustomerService {
 
         }
         return true;
+
+    }
+
+    public Integer checkPasswordIsExists(String userName,String password) {
+
+        Seller seller = sellerRepo.findByUserName(userName);
+        DeliveryAssurance deliveryAssurane = deliveryAssuranceRepo.findByUserName(userName);
+        Coordinator coordinator= coordinatorRepo.findByUserName(userName);
+          if(seller!=null && seller.getPassword().equals(password)){
+              return  seller.getId();
+          }
+          else if(deliveryAssurane!=null&&deliveryAssurane.getPassword().equals(password)){
+              return deliveryAssurane.getId();
+          }
+          else if (coordinator!=null&&coordinator.getPassword().equals(password)) {
+            return coordinator.getId();
+        }
+          return 0;
 
     }
 
@@ -57,7 +78,7 @@ public class CustomerService {
 
     public String signup(UserDto userDto) {
 
-        boolean isExist = checkIfUserNameExists(userDto.getUserName());
+        boolean isExist = checkIfUserNameIsNotUsed(userDto.getUserName());
         // isExist == false
         if (!isExist) {
             return "Failed!! this username is already exist";
@@ -86,5 +107,32 @@ public class CustomerService {
         return "you're signed up successfully !!";
 
     }
+
+    public LoginResponse login(LoginDto loginDto) {
+
+        LoginResponse loginResponse=new LoginResponse();
+
+        boolean userNameISNotUsed = checkIfUserNameIsNotUsed(loginDto.getUserName());
+        if (userNameISNotUsed ==false) // means isUserNameISUsed == true
+        {
+            Integer passCheckResponse=checkPasswordIsExists(loginDto.getUserName(), loginDto.getPassword());
+            if (passCheckResponse>0){
+                loginResponse.setMessage("Login SUCCESSFULLY");
+                loginResponse.setUserId(passCheckResponse);
+                return loginResponse;
+            }
+            else
+            {
+                loginResponse.setMessage("Wrong Password !!");
+                return loginResponse;
+            }
+        }
+        else  {
+            loginResponse.setMessage("Wrong UserName !!");
+            return loginResponse;
+        }
+
+    }
+
 
 }

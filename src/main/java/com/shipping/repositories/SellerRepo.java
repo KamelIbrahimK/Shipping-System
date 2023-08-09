@@ -6,4 +6,6 @@ import com.shipping.Entities.Seller;
 
 public interface SellerRepo extends JpaRepository<Seller, Integer> {
     public Seller findByUserName(String userName);
+
+    public Seller findByPassword(String password);
 }

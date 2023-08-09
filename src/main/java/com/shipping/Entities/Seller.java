@@ -9,7 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Data
 public class Seller extends User {
@@ -18,8 +20,8 @@ public class Seller extends User {
     private String password;
     private LocalDateTime joinDate;
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    private List<CustomerOrder> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+//    private List<CustomerOrder> orders = new ArrayList<>();
 
     public Seller(String name, String phoneNumber, String address, String userName, String password,
             LocalDateTime joinDate) {
@@ -30,6 +32,9 @@ public class Seller extends User {
         this.password = password;
         this.joinDate = joinDate;
 
+    }
+    public Seller(int id) {
+        this.setId(id);
     }
 
 }

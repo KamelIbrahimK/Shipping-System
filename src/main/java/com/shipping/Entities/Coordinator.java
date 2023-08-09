@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import javax.persistence.Entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Data
 public class Coordinator extends User {
