@@ -9,11 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Entity
-@Data
+@Setter
+@Getter
 public class Seller extends User {
     private Integer ordersPerDay;
     private String userName;

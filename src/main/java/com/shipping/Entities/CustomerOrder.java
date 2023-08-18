@@ -1,16 +1,17 @@
 package com.shipping.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
-
-@Data
+@Setter
+@Getter
 public class CustomerOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
@@ -27,7 +28,7 @@ public class CustomerOrder {
     @JoinColumn(name = "customer_id")
     private Customer customer;
     @ManyToOne
-    @JoinColumn(name = "delivery_assurance_Id")
+    @JoinColumn(name = "delivery_assurance_id")
     private DeliveryAssurance deliveryassurance;
 
 

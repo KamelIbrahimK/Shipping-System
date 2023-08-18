@@ -72,9 +72,9 @@ public class CustomerOrderService {
         }
     }
 
-    public FindAllSellerOrdersResponse findAllOrdersBySellerId(Integer sellerId) {
+    public FindAllOrdersResponse findAllOrdersBySellerId(Integer sellerId) {
         List<CustomerOrder> oldSellerOrder = customerOrderRepo.findAllOrdersBySellerId(sellerId);
-        FindAllSellerOrdersResponse response = new FindAllSellerOrdersResponse();
+        FindAllOrdersResponse response = new FindAllOrdersResponse();
         if (oldSellerOrder.isEmpty()) {
             response.setMessage("no orders founded");
             return response;
@@ -102,6 +102,33 @@ public class CustomerOrderService {
 
     }
 
+    public FindAllOrdersResponse findAllOrdersByDeliveryAssuranceId(Integer DaId) {
+        List<CustomerOrder> DaOrders = customerOrderRepo.findAllOrdersByDeliveryassuranceId(DaId);
+        FindAllOrdersResponse response = new FindAllOrdersResponse();
+        if (DaOrders.isEmpty()) {
+            response.setMessage("no orders founded");
+            return response;
+        } else {
+            response.setCustomerOrders(DaOrders);
+            response.setMessage("Successful");
+            return response;
+        }
+
+
+    }
+    public OrderResponse updateOrderStatus(UpdateOrderStatus orderStatus){
+        CustomerOrder DaOrder=customerOrderRepo.findByOrderId(orderStatus.getOrderId());
+        OrderResponse orderResponse=new OrderResponse();
+        if (DaOrder!= null&&orderStatus.getDeliveryAssuranceID()==DaOrder.getDeliveryassurance().getId()){
+            DaOrder.setStatus(orderStatus.getOrderStatus().name());
+            customerOrderRepo.save(DaOrder);
+            orderResponse.setCustomerOrder(DaOrder);
+            orderResponse.setMessage("order status updated successfully");
+        }else {
+            orderResponse.setMessage("No order Founded");
+        }
+        return orderResponse;
+    }
 
 }
 

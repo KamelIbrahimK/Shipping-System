@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @Data
-public class FindAllSellerOrdersResponse {
+public class FindAllOrdersResponse {
     private String message;
     private List<CustomerOrder> customerOrders;
 }

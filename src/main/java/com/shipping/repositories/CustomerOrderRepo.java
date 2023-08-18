@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface CustomerOrderRepo extends JpaRepository<CustomerOrder,Integer> {
 
+    CustomerOrder findByOrderId(Integer orderId);
     List<CustomerOrder> findAllOrdersBySellerId(Integer sellerId);
 
     int deleteOrderByOrderId(Integer orderId);
 
+    List<CustomerOrder> findAllOrdersByDeliveryassuranceId(Integer daId);
 }
