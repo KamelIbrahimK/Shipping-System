@@ -14,7 +14,7 @@ public class CustomerOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    private Integer id;
     private String status;
     private LocalDateTime creationDate=LocalDateTime.now();
     private LocalDateTime completeDate;

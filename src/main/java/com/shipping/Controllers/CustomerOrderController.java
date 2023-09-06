@@ -2,7 +2,7 @@ package com.shipping.Controllers;
 
 import com.shipping.Dtos.Order.*;
 import com.shipping.Entities.CustomerOrder;
-import com.shipping.Enums.OrderStatus;
+import com.shipping.Entities.DeliveryAssurance;
 import com.shipping.Services.CustomerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,7 @@ public class CustomerOrderController {
         return customerOrderService.updateOrder(order);
     }
     @GetMapping(path = "/getOrderById")
-    public OrderResponse getOrderById(@RequestParam int id){
+    public OrderResponse getOrderById(@RequestParam Integer id){
 
         return customerOrderService.getOrderById(id);
     }
@@ -45,6 +45,22 @@ public class CustomerOrderController {
     public OrderResponse changeOrderStatus(@RequestBody UpdateOrderStatus order){
         return customerOrderService.updateOrderStatus(order);
     }
-    
+    @GetMapping(path = "/getAllOrders")
+    public FindAllOrdersResponse getAllOrders(){
+        return customerOrderService.getAllOrders();
+    }
+
+    @GetMapping(path = "/getOrdersByStatus")
+    public FindAllOrdersResponse getOrdersByStatus(@RequestBody FindAllOrdersByOrderStatus orderStatus ){
+        return customerOrderService.getOrdersByStatus(orderStatus);
+    }
+    @GetMapping(path = "/getDeliveryAssuranceByOrderId")
+    public DeliveryAssurance getDeliveryAssuranceByOrderId(@RequestParam int orderId){
+        return customerOrderService.getDeliveryAssuranceByOrderId(orderId);
+    }
+    @PostMapping(path = "/assignOrderToDa")
+    public OrderResponse assignOrderToDa(@RequestBody AssignOrderDto assignOrderDto){
+        return customerOrderService.assignOrderToDa(assignOrderDto);
+    }
 
 }

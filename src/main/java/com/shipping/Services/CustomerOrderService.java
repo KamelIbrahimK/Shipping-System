@@ -3,8 +3,10 @@ package com.shipping.Services;
 import com.shipping.Dtos.Order.*;
 import com.shipping.Entities.Customer;
 import com.shipping.Entities.CustomerOrder;
+import com.shipping.Entities.DeliveryAssurance;
 import com.shipping.Entities.Seller;
 import com.shipping.repositories.CustomerOrderRepo;
+import com.shipping.repositories.DeliveryAssuranceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.Optional;
 public class CustomerOrderService {
     @Autowired
     private CustomerOrderRepo customerOrderRepo;
+    @Autowired
+    private DeliveryAssuranceRepo deliveryAssuranceRepo;
 
 
     public List<CustomerOrder> saveOrder(List<CustomerOrderPostDto> orders) {
@@ -90,7 +94,7 @@ public class CustomerOrderService {
         OrderResponse response = new OrderResponse();
         Optional<CustomerOrder> oldOrder = customerOrderRepo.findById(orderId);
         if (oldOrder.isPresent()) {
-            customerOrderRepo.deleteOrderByOrderId(orderId);
+            customerOrderRepo.deleteById(orderId);
             response.setCustomerOrder(oldOrder.get());
             response.setMessage("order deleted");
             return response;
@@ -116,21 +120,92 @@ public class CustomerOrderService {
 
 
     }
-    public OrderResponse updateOrderStatus(UpdateOrderStatus orderStatus){
-        CustomerOrder DaOrder=customerOrderRepo.findByOrderId(orderStatus.getOrderId());
-        OrderResponse orderResponse=new OrderResponse();
-        if (DaOrder!= null&&orderStatus.getDeliveryAssuranceID()==DaOrder.getDeliveryassurance().getId()){
-            DaOrder.setStatus(orderStatus.getOrderStatus().name());
-            customerOrderRepo.save(DaOrder);
-            orderResponse.setCustomerOrder(DaOrder);
+
+    public OrderResponse updateOrderStatus(UpdateOrderStatus orderStatus) {
+        Optional<CustomerOrder> DaOrder = customerOrderRepo.findById(orderStatus.getOrderId());
+        OrderResponse orderResponse = new OrderResponse();
+        if (DaOrder.isPresent() && orderStatus.getDeliveryAssuranceID() == DaOrder.get().getDeliveryassurance().getId()) {
+            DaOrder.get().setStatus(orderStatus.getOrderStatus().name());
+            customerOrderRepo.save(DaOrder.get());
+            orderResponse.setCustomerOrder(DaOrder.get());
             orderResponse.setMessage("order status updated successfully");
-        }else {
+        } else {
             orderResponse.setMessage("No order Founded");
         }
         return orderResponse;
     }
 
+    public FindAllOrdersResponse getAllOrders() {
+        FindAllOrdersResponse orders = new FindAllOrdersResponse();
+        orders.setCustomerOrders(customerOrderRepo.findAll());
+        if (orders.getCustomerOrders().isEmpty()) {
+            orders.setMessage("there is no orders available");
+            return orders;
+        } else {
+            orders.setCustomerOrders(orders.getCustomerOrders());
+            orders.setMessage("there is your orders");
+            return orders;
+        }
+
+    }
+
+    public FindAllOrdersResponse getOrdersByStatus(FindAllOrdersByOrderStatus orderStatus) {
+        List<CustomerOrder> ordersWithSameStatus = customerOrderRepo.getOrdersByStatus(orderStatus.getOrderStatus().name());
+        FindAllOrdersResponse ordersResponse = new FindAllOrdersResponse();
+        if (ordersWithSameStatus.isEmpty()) {
+            ordersResponse.setMessage("there is no orders available ");
+            return ordersResponse;
+        } else {
+            ordersResponse.setCustomerOrders(ordersWithSameStatus);
+            ordersResponse.setMessage("there is your orders");
+            return ordersResponse;
+        }
+    }
+
+    public DeliveryAssurance getDeliveryAssuranceByOrderId(Integer orderId) {
+        Optional<CustomerOrder> order = customerOrderRepo.findById(orderId);
+        if (order.isPresent()) {
+            if (order.get().getDeliveryassurance().getId() != null) {
+                return order.get().getDeliveryassurance();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public OrderResponse assignOrderToDa(AssignOrderDto assignOrderDto) {
+        OrderResponse response = new OrderResponse();
+        Optional<CustomerOrder> order = customerOrderRepo.findById(assignOrderDto.getOrderId());
+        if (order.isPresent()) {
+            if (order.get().getDeliveryassurance().getId() != null) {
+                response.setCustomerOrder(order.get());
+                response.setMessage("this order is already assigned");
+            } else {
+                Optional<DeliveryAssurance> da = deliveryAssuranceRepo.findById(assignOrderDto.getDeliveryAssuranceId());
+                if (da.isPresent()) {
+                    order.get().setDeliveryassurance(da.get());
+                    customerOrderRepo.save(order.get());
+                    response.setCustomerOrder(order.get());
+                    response.setMessage("you have been assign this order to " + da.get().getUserName());
+
+                } else {
+                    response.setMessage("Delivery Assurance is not exist");
+
+                }
+            }
+        } else {
+            response.setMessage("this order id unavailable");
+
+        }
+        return response;
+    }
 }
+
+
+
+
 
 
 
