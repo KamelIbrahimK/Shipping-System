@@ -6,7 +6,9 @@ import com.shipping.Entities.CustomerOrder;
 import com.shipping.Entities.DeliveryAssurance;
 import com.shipping.Entities.Seller;
 import com.shipping.repositories.CustomerOrderRepo;
+import com.shipping.repositories.CustomerRepo;
 import com.shipping.repositories.DeliveryAssuranceRepo;
+import com.shipping.repositories.SellerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,20 +23,42 @@ public class CustomerOrderService {
     private CustomerOrderRepo customerOrderRepo;
     @Autowired
     private DeliveryAssuranceRepo deliveryAssuranceRepo;
+    @Autowired
+    private CustomerRepo customerRepo;
+    @Autowired
+    private SellerRepo sellerRepo;
 
 
     public List<CustomerOrder> saveOrder(List<CustomerOrderPostDto> orders) {
         // list of db models to hit the db once
         List<CustomerOrder> customerOrders = new ArrayList<>();
-
         CustomerOrder customerOrder = new CustomerOrder();
+        OrderResponse response=new OrderResponse();
+
         for (int i = 0; i < orders.size(); i++) {
-            // map request dto to  db model
-            customerOrder.setOrderPrice(orders.get(i).getOrderPrice());
-            customerOrder.setNumberOfItems(orders.get(i).getNumberOfItems());
-            customerOrder.setSeller(new Seller(orders.get(i).getSellerId()));
-            customerOrder.setCustomer(new Customer(orders.get(i).getCustomerId()));
-            customerOrders.add(customerOrder);
+            Customer customer2=customerRepo.findCustomerByCusromerId(orders.get(i).getCustomerId());
+            Seller seller=sellerRepo.findSellerBySellerId(orders.get(i).getSellerId());
+            if (customer2!=null) {
+
+                if (seller!= null) {
+                    customerOrder.setOrderPrice(orders.get(i).getOrderPrice());
+                    customerOrder.setNumberOfItems(orders.get(i).getNumberOfItems());
+                    customerOrder.setSeller(new Seller(orders.get(i).getSellerId()));
+                    customerOrder.setCustomer(new Customer(orders.get(i).getCustomerId()));
+
+                    customerOrders.add(customerOrder);
+                    response.setCustomerOrder(customerOrder);
+                    response.setMessage("order add  !!");
+                }
+                else
+                {
+                    response.setMessage("there is wrong seller Id");
+
+                }
+            }else {
+                response.setMessage("there is wrong customer Id");
+
+            }
         }
 
         return customerOrderRepo.saveAll(customerOrders);
