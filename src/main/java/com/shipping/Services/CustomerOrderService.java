@@ -36,11 +36,11 @@ public class CustomerOrderService {
         OrderResponse response=new OrderResponse();
 
         for (int i = 0; i < orders.size(); i++) {
-            Customer customer2=customerRepo.findCustomerByCusromerId(orders.get(i).getCustomerId());
-            Seller seller=sellerRepo.findSellerBySellerId(orders.get(i).getSellerId());
-            if (customer2!=null) {
+            Optional<Customer> customer2=customerRepo.findById(orders.get(i).getCustomerId());
+            Optional<Seller> seller=sellerRepo.findById(orders.get(i).getSellerId());
+            if (customer2.isPresent()) {
 
-                if (seller!= null) {
+                if (seller.isPresent()) {
                     customerOrder.setOrderPrice(orders.get(i).getOrderPrice());
                     customerOrder.setNumberOfItems(orders.get(i).getNumberOfItems());
                     customerOrder.setSeller(new Seller(orders.get(i).getSellerId()));
@@ -225,6 +225,19 @@ public class CustomerOrderService {
         }
         return response;
     }
+    public List<String> getUserNameByOrdersPerDay(Integer numberOfOrders){
+        List<CustomerOrder>customerOrderList=customerOrderRepo.findAll();
+        List<String>sellersName=new ArrayList<>();
+        for (int i = 0; i < customerOrderList.size(); i++) {
+            if (customerOrderList.get(i).getSeller().getOrdersPerDay()>=numberOfOrders){
+                String sellerName= customerOrderList.get(i).getSeller().getName();
+                sellersName.add(sellerName);
+            }
+        }
+        return sellersName;
+
+    }
+
 }
 
 

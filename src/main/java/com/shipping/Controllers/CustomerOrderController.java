@@ -62,5 +62,9 @@ public class CustomerOrderController {
     public OrderResponse assignOrderToDa(@RequestBody AssignOrderDto assignOrderDto){
         return customerOrderService.assignOrderToDa(assignOrderDto);
     }
+    @GetMapping(path = "/getSellersNamesByThereNumOfOrders")
+    public List<String> getUserNameByOrdersPerDay(@RequestParam Integer numberOfOrders){
+        return customerOrderService.getUserNameByOrdersPerDay(numberOfOrders);
+    }
 
 }

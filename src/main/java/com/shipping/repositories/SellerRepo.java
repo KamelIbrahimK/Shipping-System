@@ -10,7 +10,5 @@ public interface SellerRepo extends JpaRepository<Seller, Integer> {
 
      Seller findByUserName(String userName);
 
-     Seller findSellerBySellerId(Integer sellerId);
-
      Seller findByPassword(String password);
 }
