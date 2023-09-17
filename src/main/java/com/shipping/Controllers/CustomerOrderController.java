@@ -66,5 +66,17 @@ public class CustomerOrderController {
     public List<String> getUserNameByOrdersPerDay(@RequestParam Integer numberOfOrders){
         return customerOrderService.getUserNameByOrdersPerDay(numberOfOrders);
     }
+    @GetMapping(path = "/deleteAllOrders")
+    public String deleteAllOrders(){
+        return customerOrderService.deleteAllOrders();
+    }
+    @GetMapping(path = "/filtterSellersByNumOfOrders")
+    public List<String>filterSellersByNumOfOrders(@RequestParam Integer numOfOrders){
+        return customerOrderService.filterSellersByNumOfOrders(numOfOrders);
+    }
+    @GetMapping(path = "/findOrdersCountBySellerId")
+    public Integer findOrdersCountBySellerId(@RequestParam Integer sellerId){
+        return customerOrderService.findOrdersCountBySellerId(sellerId);
+    }
 
 }

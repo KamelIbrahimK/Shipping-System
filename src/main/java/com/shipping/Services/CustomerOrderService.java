@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CustomerOrderService {
@@ -33,11 +31,11 @@ public class CustomerOrderService {
         // list of db models to hit the db once
         List<CustomerOrder> customerOrders = new ArrayList<>();
         CustomerOrder customerOrder = new CustomerOrder();
-        OrderResponse response=new OrderResponse();
+        OrderResponse response = new OrderResponse();
 
         for (int i = 0; i < orders.size(); i++) {
-            Optional<Customer> customer2=customerRepo.findById(orders.get(i).getCustomerId());
-            Optional<Seller> seller=sellerRepo.findById(orders.get(i).getSellerId());
+            Optional<Customer> customer2 = customerRepo.findById(orders.get(i).getCustomerId());
+            Optional<Seller> seller = sellerRepo.findById(orders.get(i).getSellerId());
             if (customer2.isPresent()) {
 
                 if (seller.isPresent()) {
@@ -49,13 +47,11 @@ public class CustomerOrderService {
                     customerOrders.add(customerOrder);
                     response.setCustomerOrder(customerOrder);
                     response.setMessage("order add  !!");
-                }
-                else
-                {
+                } else {
                     response.setMessage("there is wrong seller Id");
 
                 }
-            }else {
+            } else {
                 response.setMessage("there is wrong customer Id");
 
             }
@@ -225,12 +221,13 @@ public class CustomerOrderService {
         }
         return response;
     }
-    public List<String> getUserNameByOrdersPerDay(Integer numberOfOrders){
-        List<CustomerOrder>customerOrderList=customerOrderRepo.findAll();
-        List<String>sellersName=new ArrayList<>();
+
+    public List<String> getUserNameByOrdersPerDay(Integer numberOfOrders) {
+        List<CustomerOrder> customerOrderList = customerOrderRepo.findAll();
+        List<String> sellersName = new ArrayList<>();
         for (int i = 0; i < customerOrderList.size(); i++) {
-            if (customerOrderList.get(i).getSeller().getOrdersPerDay()>=numberOfOrders){
-                String sellerName= customerOrderList.get(i).getSeller().getName();
+            if (customerOrderList.get(i).getSeller().getOrdersPerDay() >= numberOfOrders) {
+                String sellerName = customerOrderList.get(i).getSeller().getName();
                 sellersName.add(sellerName);
             }
         }
@@ -238,8 +235,34 @@ public class CustomerOrderService {
 
     }
 
-}
+    public String deleteAllOrders() {
+        List<CustomerOrder> customerOrders = customerOrderRepo.findAll();
+        if (customerOrders.isEmpty()) {
+            return "there is no orders founded";
+        } else {
+            customerOrderRepo.deleteAll();
+        }
+        return "orders deleted";
+    }
 
+    public Integer findOrdersCountBySellerId(Integer sellerId) {
+        List<CustomerOrder> sellerOrders = customerOrderRepo.findAllOrdersBySellerId(sellerId);
+        return sellerOrders.size();
+    }
+
+    public List<String> filterSellersByNumOfOrders(Integer numOfOrders) {
+        List<String> sellersName = new ArrayList<>();
+        List<Seller> sellers = sellerRepo.findAll();
+        for (int i = 0; i < sellers.size(); i++) {
+            int sellerOrdersCount = findOrdersCountBySellerId(sellers.get(i).getId());
+            if (sellerOrdersCount >= numOfOrders) {
+                sellersName.add(sellers.get(i).getName());
+            }
+        }
+        return sellersName;
+    }
+
+}
 
 
 
