@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerOrderService {
@@ -262,7 +263,38 @@ public class CustomerOrderService {
         return sellersName;
     }
 
+    public static void sort(List<TopSeller> list) {
+
+        list.sort((o1, o2)
+                -> o2.getOrderCount() -
+                o1.getOrderCount());
+    }
+
+    public List<String> findTheTopSellersInOrdersCount(Integer limit) {
+        List<String> topSellers = new ArrayList<>();
+        List<Seller> sellers = sellerRepo.findAll();
+        List<TopSeller> AllSellersWithOrdersCount = new ArrayList<>();
+        for (int i = 0; i < sellers.size(); i++) {
+            int sellerId = sellers.get(i).getId();
+            int sellerOrdersCount = findOrdersCountBySellerId(sellerId);
+            AllSellersWithOrdersCount.add(new TopSeller(sellerId, sellerOrdersCount, sellers.get(i).getName()));
+        }
+        sort(AllSellersWithOrdersCount);
+        for (int i = 0; i < AllSellersWithOrdersCount.size(); i++) {
+            if (i == limit) {
+                break;
+            }
+            topSellers.add(i, AllSellersWithOrdersCount.get(i).getSellerName());
+
+        }
+        return topSellers;
+    }
+
 }
+
+
+
+
 
 
 

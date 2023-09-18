@@ -78,5 +78,9 @@ public class CustomerOrderController {
     public Integer findOrdersCountBySellerId(@RequestParam Integer sellerId){
         return customerOrderService.findOrdersCountBySellerId(sellerId);
     }
+    @GetMapping(path = "/findTheTopSellersInOrdersCount")
+    public List<String>findTheTopSellersInOrdersCount(@RequestParam Integer limit){
+        return customerOrderService.findTheTopSellersInOrdersCount(limit);
+    }
 
 }
