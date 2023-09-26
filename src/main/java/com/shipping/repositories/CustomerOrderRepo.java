@@ -9,7 +9,6 @@ import java.util.Map;
 
 @Repository
 public interface CustomerOrderRepo extends JpaRepository<CustomerOrder , Integer>{
-
     List<CustomerOrder> findAllOrdersBySellerId(Integer sellerId);
 
     List<CustomerOrder> findAllOrdersByDeliveryassuranceId(Integer daId);

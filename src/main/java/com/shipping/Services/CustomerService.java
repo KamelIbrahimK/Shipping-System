@@ -95,7 +95,7 @@ public class CustomerService {
 
         } else if (userDto.getType().equals(UserType.DELIVERY_ASSURANCE)) {
             DeliveryAssurance deliveryAssurance = new DeliveryAssurance(userDto.getName(), userDto.getPhoneNumber(),
-                    userDto.getAddress(), userDto.getUserName(), userDto.getPassword(), LocalDateTime.now());
+                    userDto.getAddress(), userDto.getUserName(), userDto.getPassword(), LocalDateTime.now(),userDto.getSalary());
             deliveryAssuranceRepo.save(deliveryAssurance);
 
         } else if (userDto.getType().equals(UserType.COORDINATOR)) {

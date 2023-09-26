@@ -1,18 +1,9 @@
 package com.shipping.Entities;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 @NoArgsConstructor
 @Entity
 @Setter
@@ -27,7 +18,7 @@ public class Seller extends User {
 //    private List<CustomerOrder> orders = new ArrayList<>();
 
     public Seller(String name, String phoneNumber, String address, String userName, String password,
-            LocalDateTime joinDate) {
+                  LocalDateTime joinDate) {
         this.setName(name);
         this.setAddress(address);
         this.setPhoneNumber(phoneNumber);
@@ -36,8 +27,9 @@ public class Seller extends User {
         this.joinDate = joinDate;
 
     }
-    public Seller(int id) {
-        this.setId(id);
-    }
 
+    public Seller(Integer sellerId) {
+        this.setId(sellerId);
+    }
 }
+

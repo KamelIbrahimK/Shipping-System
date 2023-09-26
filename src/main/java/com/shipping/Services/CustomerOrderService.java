@@ -5,6 +5,7 @@ import com.shipping.Entities.Customer;
 import com.shipping.Entities.CustomerOrder;
 import com.shipping.Entities.DeliveryAssurance;
 import com.shipping.Entities.Seller;
+import com.shipping.Enums.OrderStatus;
 import com.shipping.repositories.CustomerOrderRepo;
 import com.shipping.repositories.CustomerRepo;
 import com.shipping.repositories.DeliveryAssuranceRepo;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.awt.print.Book;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 public class CustomerOrderService {
@@ -143,10 +146,16 @@ public class CustomerOrderService {
     }
 
     public OrderResponse updateOrderStatus(UpdateOrderStatus orderStatus) {
+        int id=orderStatus.getOrderId();
+        Boolean x= customerOrderRepo.existsById(orderStatus.getOrderId());
         Optional<CustomerOrder> DaOrder = customerOrderRepo.findById(orderStatus.getOrderId());
         OrderResponse orderResponse = new OrderResponse();
-        if (DaOrder.isPresent() && orderStatus.getDeliveryAssuranceID() == DaOrder.get().getDeliveryassurance().getId()) {
+        if (DaOrder.isPresent() && orderStatus.getDeliveryAssuranceID()
+                == DaOrder.get().getDeliveryassurance().getId()) {
             DaOrder.get().setStatus(orderStatus.getOrderStatus().name());
+            if(orderStatus.getOrderStatus().equals(OrderStatus.DELIVERED)){
+                DaOrder.get().setCompleteDate(LocalDateTime.now());
+            }
             customerOrderRepo.save(DaOrder.get());
             orderResponse.setCustomerOrder(DaOrder.get());
             orderResponse.setMessage("order status updated successfully");
@@ -291,6 +300,10 @@ public class CustomerOrderService {
     }
 
 }
+
+
+
+
 
 
 

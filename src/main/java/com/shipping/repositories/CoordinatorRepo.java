@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CoordinatorRepo extends JpaRepository<Coordinator,Integer> {
-    public Coordinator findByUserName(String userName);
-    public Coordinator findByPassword(String password);
+     Coordinator findByUserName(String userName);
+     Coordinator findByPassword(String password);
 }
